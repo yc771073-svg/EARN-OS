@@ -1,0 +1,19 @@
+name: Build APK
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.3'
+      - run: cp -r lib /tmp/lib
+      - run: flutter create . --org com.earnos --project-name earn_os_clean --platforms android --no-pub
+      - run: rm -rf lib && cp -r /tmp/lib lib
+      - run: flutter pub get
+      - run: flutter build apk --debug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: EARN-OS-APK
+          path: build/app/outputs/flutter-apk/app-debug.apk
