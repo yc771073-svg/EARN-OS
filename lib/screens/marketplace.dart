@@ -1,43 +1,64 @@
 import 'package:flutter/material.dart';
 import '../theme.dart';
+import '../services/country_service.dart';
 class MarketplaceScreen extends StatelessWidget { const MarketplaceScreen({super.key});
   @override Widget build(BuildContext context){
+    // PAYS AUTO: Pour toi, c'est Mali - Bamako. Si un Français ouvre, c'est France auto.
+    String myCountry = 'ML'; // Détecté auto par GPS dans la vraie version
+    var info = CountryService.countries[myCountry]!;
+    var locals = CountryService.localProducts(myCountry);
+    var globals = CountryService.globalBrands;
     return ListView(padding: EdgeInsets.all(14), children:[
-      // TITRE COMME TA PHOTO - UNE SEULE FOIS
+      // BANDE PAYS AUTO
+      Container(padding: EdgeInsets.all(12), decoration: BoxDecoration(color: EarnTheme.gold, borderRadius: BorderRadius.circular(14)), child: Row(children:[
+        Text(info['flag']!, style: TextStyle(fontSize:28)),
+        SizedBox(width:10),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children:[
+          Text('Tu es à ${info['city']} - ${info['name']}', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize:15)),
+          Text('On te montre d\'abord les produits de ton pays 🇲🇱 + les marques mondiales', style: TextStyle(color: Colors.black, fontSize:11)),
+        ])),
+        Container(padding: EdgeInsets.symmetric(horizontal:8, vertical:4), decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(8)), child: Text('AUTO 📍', style: TextStyle(color: Colors.white, fontSize:10, fontWeight: FontWeight.bold))),
+      ])),
+      SizedBox(height:14),
       Center(child: Column(children:[
         Text('Global Brands Marketplace', style: TextStyle(color: EarnTheme.gold, fontSize:20, fontWeight: FontWeight.bold)),
-        SizedBox(height:4), Text('Fashion • Electronics • Beauty • Luxury • Art • Food — from Paris, Dubai, USA, Mali & beyond', textAlign: TextAlign.center, style: TextStyle(color: EarnTheme.gold.withOpacity(0.8), fontSize:12)),
+        Text('Fashion • Electronics • Beauty • Luxury • Art • Food', textAlign: TextAlign.center, style: TextStyle(color: EarnTheme.gold.withOpacity(0.8), fontSize:12)),
       ])),
       SizedBox(height:14),
       Container(padding: EdgeInsets.symmetric(horizontal:14), decoration: BoxDecoration(border: Border.all(color: EarnTheme.gold), borderRadius: BorderRadius.circular(12)), child: Row(children:[Icon(Icons.search, color: EarnTheme.gold), SizedBox(width:8), Expanded(child: TextField(decoration: InputDecoration(border: InputBorder.none, hintText: 'Search brands, products, countries...', hintStyle: TextStyle(color: Colors.white38)))), Icon(Icons.tune, color: EarnTheme.gold)])),
       SizedBox(height:16),
-      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children:[Text('Shop by Category', style: TextStyle(color: EarnTheme.gold, fontWeight: FontWeight.bold, fontSize:16)), Text('See all >', style: TextStyle(color: EarnTheme.gold))]),
+      // SECTION 1: PRODUITS DE TON PAYS EN PREMIER - AUTO
+      Row(children:[Text('${info['flag']}  Pour Toi au ${info['name']} - Produits Locaux', style: TextStyle(color: EarnTheme.gold, fontWeight: FontWeight.bold, fontSize:15))]),
+      Text('Parce que tu es à ${info['city']}, on te montre ça en premier', style: TextStyle(color: Colors.white60, fontSize:11)),
       SizedBox(height:10),
-      SizedBox(height:78, child: ListView(scrollDirection: Axis.horizontal, children:[
-        _cat('👗','Fashion'), _cat('📱','Electronics'), _cat('💄','Beauty'), _cat('💎','Luxury'), _cat('🍽️','Food'), _cat('🎨','Art'),
-      ])),
-      SizedBox(height:16),
-      Text('Featured for You — Global Picks', style: TextStyle(color: EarnTheme.gold, fontWeight: FontWeight.bold, fontSize:16)),
+      SizedBox(height:220, child: ListView(scrollDirection: Axis.horizontal, children: locals.map((p)=>Container(width:170, margin: EdgeInsets.only(right:12), decoration: BoxDecoration(border: Border.all(color: EarnTheme.gold), borderRadius: BorderRadius.circular(14)), child: Column(children:[
+        Expanded(child: ClipRRect(borderRadius: BorderRadius.vertical(top: Radius.circular(13)), child: Image.network(p['img']!, width: double.infinity, fit: BoxFit.cover, errorBuilder: (c,e,s)=>Container(color: Colors.black, child: Center(child: Text('🇲🇱', style: TextStyle(fontSize:40))))))),
+        Padding(padding: EdgeInsets.all(8), child: Column(children:[Text(p['name']!, textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize:12)), Text(p['city']!, style: TextStyle(color: EarnTheme.gold, fontSize:10)), Text(p['price']!, style: TextStyle(color: EarnTheme.gold, fontWeight: FontWeight.bold))])),
+      ]))).toList())),
+      SizedBox(height:18),
+      // SECTION 2: MARQUES MONDIALES - TOUT LE MONDE LES VOIT
+      Row(children:[Text('🌍  Marques Mondiales - Pour Tout Le Monde', style: TextStyle(color: EarnTheme.gold, fontWeight: FontWeight.bold, fontSize:15))]),
+      Text('Tesla, Nike, Apple, Chanel... visibles au Mali, en France, à Dubai, partout. Tu peux commander.', style: TextStyle(color: Colors.white60, fontSize:11)),
       SizedBox(height:10),
-      GridView.count(crossAxisCount:2, shrinkWrap:true, physics: NeverScrollableScrollPhysics(), childAspectRatio:0.72, crossAxisSpacing:12, mainAxisSpacing:12, children:[
-        _prod('Paris • Fashion','Haute Couture Collection','Designer • France','€280','https://images.unsplash.com/photo-1509631179647-0177331693ae?w=400'),
-        _prod('Dubai • Luxury','Luxury Watch & Perfume','Premium Brands • UAE','AED 1,250','https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400'),
-        _prod('USA • Tech','Noise-Cancelling Headphones','Apple • Samsung Tech','\$199','https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400'),
-        _prod('Mali • Art','Handcrafted Textile Art','Artisan • Mali','\$85','https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?w=400'),
-      ]),
+      GridView.count(crossAxisCount:2, shrinkWrap:true, physics: NeverScrollableScrollPhysics(), childAspectRatio:0.85, crossAxisSpacing:12, mainAxisSpacing:12, children: globals.map((b)=>Container(decoration: BoxDecoration(border: Border.all(color: EarnTheme.gold), borderRadius: BorderRadius.circular(14)), child: Column(children:[
+        Container(padding: EdgeInsets.all(14), child: Text(b['emoji']!, style: TextStyle(fontSize:36))),
+        Text(b['name']!, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize:14)),
+        Text(b['cat']!, style: TextStyle(color: EarnTheme.gold, fontSize:11)),
+        SizedBox(height:4), Text(b['price']!, style: TextStyle(color: EarnTheme.gold, fontWeight: FontWeight.bold)),
+        SizedBox(height:4), Padding(padding: EdgeInsets.symmetric(horizontal:8), child: Text(b['desc']!, textAlign: TextAlign.center, style: TextStyle(color: Colors.white60, fontSize:10))),
+        SizedBox(height:8),
+        Container(padding: EdgeInsets.symmetric(horizontal:14, vertical:6), decoration: BoxDecoration(color: EarnTheme.gold, borderRadius: BorderRadius.circular(20)), child: Text('Commander', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize:11))),
+      ]))).toList()),
       SizedBox(height:14),
-      Container(padding: EdgeInsets.all(14), decoration: BoxDecoration(border: Border.all(color: EarnTheme.gold.withOpacity(0.5)), borderRadius: BorderRadius.circular(16)), child: Column(children:[
-        Text('Just For You', style: TextStyle(color: EarnTheme.gold, fontWeight: FontWeight.bold)),
-        Text('Discover curated luxury from 120+ countries', style: TextStyle(color: Colors.white70, fontSize:12)),
-        SizedBox(height:10), Wrap(spacing:8, runSpacing:8, children:['CHANEL','SAMSUNG','SEPHORA','BOSS','SONY'].map((e)=>Container(padding: EdgeInsets.symmetric(horizontal:10, vertical:6), decoration: BoxDecoration(border: Border.all(color: EarnTheme.gold.withOpacity(0.5)), borderRadius: BorderRadius.circular(8)), child: Text(e, style: TextStyle(color: EarnTheme.gold, fontSize:11, fontWeight: FontWeight.bold)))).toList()),
+      // EXEMPLE TESLA
+      Container(padding: EdgeInsets.all(14), decoration: BoxDecoration(color: EarnTheme.gold, borderRadius: BorderRadius.circular(16)), child: Column(children:[
+        Text('🚗  EXEMPLE TESLA', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize:16)),
+        Text('Tu es à Bamako, tu vois Tesla. Un Français à Paris voit aussi Tesla. Un Américain aussi.', textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontSize:12)),
+        Text('Tu commandes Tesla depuis Bamako -> EARN OS organise la livraison internationale + dédouanement + livreur à Bamako.', textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontSize:12, fontWeight: FontWeight.bold)),
+        SizedBox(height:8), Text('Tesla Model 3 - €45,000 - Livraison Mondiale 🌍', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
       ])),
       SizedBox(height:10),
-      Center(child: Text('🌍 EARN AI en haut à droite ✨ - Clique sur ✨ pour parler - Toutes langues • Español 🇪🇸', style: TextStyle(color: EarnTheme.gold, fontSize:11, fontWeight: FontWeight.bold))),
+      Center(child: Text('📍 Pays Auto: Mali 🇲🇱 pour toi • Change auto si tu voyages • ✨ EARN AI en haut à droite', style: TextStyle(color: EarnTheme.gold, fontSize:11, fontWeight: FontWeight.bold))),
     ]);
   }
-  Widget _cat(String e, String t)=>Container(width:90, margin: EdgeInsets.only(right:10), decoration: BoxDecoration(border: Border.all(color: EarnTheme.gold), borderRadius: BorderRadius.circular(12)), child: Column(mainAxisAlignment: MainAxisAlignment.center, children:[Text(e, style: TextStyle(fontSize:26)), SizedBox(height:4), Text(t, style: TextStyle(color: Colors.white, fontSize:12))])); 
-  Widget _prod(String tag, String title, String sub, String price, String img)=>Container(decoration: BoxDecoration(border: Border.all(color: EarnTheme.gold), borderRadius: BorderRadius.circular(14)), child: Column(children:[
-    Expanded(child: ClipRRect(borderRadius: BorderRadius.vertical(top: Radius.circular(13)), child: Stack(children:[Image.network(img, width: double.infinity, fit: BoxFit.cover, errorBuilder: (c,e,s)=>Container(color: Colors.black, child: Center(child: Text('✨', style: TextStyle(fontSize:40))))), Positioned(top:8, left:8, child: Container(padding: EdgeInsets.symmetric(horizontal:8, vertical:4), color: EarnTheme.gold, child: Text(tag, style: TextStyle(color: Colors.black, fontSize:10, fontWeight: FontWeight.bold))))]))),
-    Padding(padding: EdgeInsets.all(10), child: Column(children:[Text(title, textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize:12)), Text(sub, style: TextStyle(color: EarnTheme.gold, fontSize:10)), SizedBox(height:4), Text(price, style: TextStyle(color: EarnTheme.gold, fontWeight: FontWeight.bold, fontSize:15))])),
-  ]));
 }
