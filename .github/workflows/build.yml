@@ -1,38 +1,44 @@
-name: Build EARN OS APK
+name: Créer un fichier APK EARN OS
 on:
   push:
     branches: [ main ]
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.0'
+          flutter-version: '3.24.0'
           channel: 'stable'
+          cache: true
+      - run: flutter clean
       - run: flutter pub get
-      - run: flutter build apk --release
-      # On met le APK en Release, pas en ZIP, pour que Chrome ne bloque pas
+      - run: flutter analyze --no-pub || true
+      - run: flutter build apk --release --no-tree-shake-icons
       - name: Upload APK direct
         uses: actions/upload-artifact@v4
         with:
           name: EARN-OS-APK
           path: build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
       - name: Create Release APK direct
-        uses: softprops/action-gh-release@v1
-        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: v3.5-${{ github.run_number }}
-          name: EARN OS V3.5 - Sans Ma Boutique
+          tag_name: v4.0-${{ github.run_number }}
+          name: EARN OS V4.0 - Sans Barre Bas Uber + Compte Marque
           files: build/app/outputs/flutter-apk/app-release.apk
           body: |
-            EARN OS V3.5
-            - Plus de Ma Boutique
-            - Plus de Espace Marchand
-            - Plus de Delivery visible - EARN OS gere en fond
-            - Parametres en haut a gauche
-            - 4 onglets seulement: Home | Explore | Cart | Profile
-            - EARN AI en haut a droite comme Meta
+            EARN OS V4.0 - TOUT REPARE
+            - PLUS de barre bas comme Uber - Home Explore Cart Profile supprime
+            - Haut seulement: Parametres a gauche, EARN AI a droite
+            - Shop by Category: Fashion Electronics Beauty Luxury Food Art
+            - Commander a Manger Bamako: Dibi Pizza Poulet To Burger
+            - Parametres remplis
+            - Compte Marque SEULEMENT dans Parametres: Carte Commerce + Carte Bancaire / RIB - Cache pour clients
+            - Commission: Toi 15% - Marque 70% - Livreur 15%
+          fail_on_unmatched_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

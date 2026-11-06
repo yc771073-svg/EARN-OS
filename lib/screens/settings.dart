@@ -83,11 +83,11 @@ class _SState extends State<SettingsScreen> {
             SizedBox(height:10),
             // 2. CARTE DE COMMERCE - PHOTO
             Container(padding: EdgeInsets.all(12), decoration: BoxDecoration(border: Border.all(color: EarnTheme.gold.withOpacity(0.5)), borderRadius: BorderRadius.circular(12)), child: Column(children:[
-              Row(children:[Icon(Icons.badge, color: EarnTheme.gold), SizedBox(width:8), Expanded(child: Text('1. Carte de Commerce', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize:14))), if(commerceCardUploaded) Icon(Icons.check_circle, color: Colors.green)]),
+              Row(children:[Icon(Icons.business, color: EarnTheme.gold), SizedBox(width:8), Expanded(child: Text('1. Carte de Commerce', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize:14))), if(commerceCardUploaded) Icon(Icons.check_circle, color: Colors.green)]),
               SizedBox(height:6),
               Text('Prends en photo ta Carte de Commerce / Registre de Commerce du Mali. Obligatoire pour vendre sur EARN OS.', style: TextStyle(color: Colors.white60, fontSize:11)),
               SizedBox(height:10),
-              _brandField('Numéro Carte de Commerce', 'Ex: RC/BKO/2024/12345', Icons.numbers, (v)=>commerceCardNumber=v),
+              _brandField('Numéro Carte de Commerce', 'Ex: RC/BKO/2024/12345', Icons.confirmation_number, (v)=>commerceCardNumber=v),
               SizedBox(height:10),
               GestureDetector(onTap: ()=>setState(()=>commerceCardUploaded=true), child: Container(padding: EdgeInsets.all(12), decoration: BoxDecoration(color: commerceCardUploaded ? Colors.green.withOpacity(0.2) : EarnTheme.gold, borderRadius: BorderRadius.circular(10)), child: Row(mainAxisAlignment: MainAxisAlignment.center, children:[Icon(commerceCardUploaded ? Icons.check : Icons.camera_alt, color: commerceCardUploaded ? Colors.green : Colors.black), SizedBox(width:8), Text(commerceCardUploaded ? 'Photo Ajoutée ✅ - En vérification' : '📸 Prendre en Photo ma Carte de Commerce', style: TextStyle(color: commerceCardUploaded ? Colors.green : Colors.black, fontWeight: FontWeight.bold, fontSize:12))]))),
             ])),
@@ -106,7 +106,7 @@ class _SState extends State<SettingsScreen> {
                 Expanded(child: GestureDetector(onTap: ()=>setState(()=>bankVerified=false), child: Container(padding: EdgeInsets.all(10), decoration: BoxDecoration(border: Border.all(color: EarnTheme.gold), borderRadius: BorderRadius.circular(10)), child: Column(children:[Text('📱', style: TextStyle(fontSize:22)), Text('Orange Money Pro', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize:11))])))),
               ]),
               SizedBox(height:10),
-              _brandField('RIB / IBAN - Compte pour recevoir l\'argent', 'Ex: ML... - Banque: BIM, BDM, Ecobank...', Icons.account_balance, (v)=>bankRIB=v),
+              _brandField('RIB / IBAN - Compte pour recevoir l\'argent', 'Ex: ML... - Banque: BIM, BDM, Ecobank...', Icons.account_balance_wallet, (v)=>bankRIB=v),
               SizedBox(height:8),
               _brandField('Numéro Orange Money Pro (si tu choisis Orange)', 'Ex: +223 70 00 00 00', Icons.phone, (v)=>bankCardLast4=v),
               SizedBox(height:10),
