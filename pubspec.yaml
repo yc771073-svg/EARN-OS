@@ -1,20 +1,15 @@
-name: earn_os_clean
-description: EARN OS - World Selector, Marketplace, Delivery, Settings
+name: earn_os
+description: EARN OS - Le luxe du monde, livre a Bamako
 publish_to: 'none'
 version: 1.0.0+1
-
 environment:
-  sdk: ">=3.0.0 <4.0.0"
-
+  sdk: '>=3.0.0 <4.0.0'
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.6
-
-dev_dependencies:
-  flutter_test:
+  flutter_localizations:
     sdk: flutter
-  flutter_lints: ^3.0.0
-
+  http: ^1.2.0
+  cupertino_icons: ^1.0.8
 flutter:
   uses-material-design: true

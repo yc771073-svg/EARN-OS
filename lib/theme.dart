@@ -8,8 +8,8 @@ class EarnTheme {
     brightness: Brightness.dark,
     scaffoldBackgroundColor: black,
     primaryColor: gold,
-    appBarTheme: AppBarTheme(backgroundColor: black, foregroundColor: gold),
-    colorScheme: ColorScheme.dark(primary: gold, secondary: goldLight, surface: blackCard),
+    appBarTheme: const AppBarTheme(backgroundColor: black, foregroundColor: gold),
+    colorScheme: const ColorScheme.dark(primary: gold, secondary: goldLight, surface: blackCard),
     elevatedButtonTheme: ElevatedButtonThemeData(style: ElevatedButton.styleFrom(backgroundColor: gold, foregroundColor: Colors.black)),
   );
 }

@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
-
+import '../theme.dart';
 class SettingsScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(title: Text("Settings", style: TextStyle(color: Color(0xFFD4AF37), fontSize: 28)), backgroundColor: Colors.black, leading: Icon(Icons.arrow_back, color: Colors.white)),
-      body: ListView(children: [
-        Container(padding: EdgeInsets.all(16), decoration: BoxDecoration(border: Border.all(color: Color(0xFFD4AF37))), child: Row(children: [CircleAvatar(radius: 40, backgroundColor: Color(0xFFD4AF37)), SizedBox(width: 10), Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text("Alex Chen", style: TextStyle(color: Color(0xFFD4AF37), fontSize: 20)), Text("alex.chen@earnos.io", style: TextStyle(color: Colors.white70)), Container(padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2), decoration: BoxDecoration(border: Border.all(color: Color(0xFFD4AF37)), borderRadius: BorderRadius.circular(12)), child: Text("PRO MEMBER", style: TextStyle(color: Color(0xFFD4AF37), fontSize: 10)))])])),
-        _section("ACCOUNT"),
-        _tile("Notifications", "ON"), _tile("Payment", "•••• 4242 • Visa"), _tile("Delivery", "123 Nova St, Neo District"),
-        _section("PREFERENCES"),
-        _tile("Language", "English (US)"), _tile("Dark Mode", "ON"),
-        _section("SECURITY & SUPPORT"),
-        _tile("Security & Privacy", ""), _tile("Help & Support", ""),
-        Center(child: Text("EARN OS • Version 2.1.4 • Build 214.9", style: TextStyle(color: Colors.white54, fontSize: 12)))
-      ]),
-    );
+  final Function(Locale) onLocaleChange;
+  const SettingsScreen({super.key, required this.onLocaleChange});
+  @override Widget build(BuildContext context) {
+    return Scaffold(backgroundColor: EarnTheme.black, appBar: AppBar(backgroundColor: EarnTheme.black, title: Text('Profile', style: TextStyle(color: EarnTheme.gold))),
+    body: ListView(padding: EdgeInsets.all(16), children: [
+      CircleAvatar(radius: 40, backgroundColor: EarnTheme.gold, child: Text('Y', style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold))),
+      SizedBox(height: 12), Text('Youssouf - Bamako', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+      SizedBox(height: 16), Text('Langue', style: TextStyle(color: EarnTheme.gold, fontWeight: FontWeight.bold)),
+      ListTile(title: Text('Français', style: TextStyle(color: Colors.white)), onTap: () => onLocaleChange(Locale('fr'))),
+      ListTile(title: Text('English', style: TextStyle(color: Colors.white)), onTap: () => onLocaleChange(Locale('en'))),
+      ListTile(title: Text('Bambara', style: TextStyle(color: Colors.white)), onTap: () => onLocaleChange(Locale('bm'))),
+      ListTile(title: Text('العربية', style: TextStyle(color: Colors.white)), onTap: () => onLocaleChange(Locale('ar'))),
+      Divider(color: EarnTheme.gold),
+      ListTile(title: Text('Commission: 5% / 8% / 10% / 15%', style: TextStyle(color: Colors.white)), subtitle: Text('Selon montant commande', style: TextStyle(color: EarnTheme.gold))),
+      ListTile(title: Text('Livreur: 10% par livraison', style: TextStyle(color: Colors.white))),
+    ]));
   }
-  Widget _section(String t) => Padding(padding: EdgeInsets.fromLTRB(16, 20, 16, 8), child: Text(t, style: TextStyle(color: Colors.white54, letterSpacing: 2)));
-  Widget _tile(String title, String value) => ListTile(title: Text(title, style: TextStyle(color: Color(0xFFD4AF37))), trailing: Text(value, style: TextStyle(color: Colors.white70)), onTap: (){});
 }
