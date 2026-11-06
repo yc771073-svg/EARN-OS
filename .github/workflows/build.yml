@@ -1,19 +1,29 @@
 name: Build APK
-on: [push]
+on:
+  push:
+    branches: [ main ]
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.3'
-      - run: cp -r lib /tmp/lib
-      - run: flutter create . --org com.earnos --project-name earn_os_clean --platforms android --no-pub
-      - run: rm -rf lib && cp -r /tmp/lib lib
+          flutter-version: '3.24.0'
+          channel: 'stable'
+          cache: true
       - run: flutter pub get
-      - run: flutter build apk --debug
+      - run: flutter build apk --release
       - uses: actions/upload-artifact@v4
         with:
           name: EARN-OS-APK
-          path: build/app/outputs/flutter-apk/app-debug.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v4.5-${{ github.run_number }}
+          name: EARN OS V4.5 - Tout Propre
+          files: build/app/outputs/flutter-apk/app-release.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
