@@ -1,44 +1,19 @@
-name: Créer un fichier APK EARN OS
-on:
-  push:
-    branches: [ main ]
+name: Build APK
+on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
-          channel: 'stable'
-          cache: true
-      - run: flutter clean
+          flutter-version: '3.22.3'
+      - run: cp -r lib /tmp/lib
+      - run: flutter create . --org com.earnos --project-name earn_os_clean --platforms android --no-pub
+      - run: rm -rf lib && cp -r /tmp/lib lib
       - run: flutter pub get
-      - run: flutter analyze --no-pub || true
-      - run: flutter build apk --release --no-tree-shake-icons
-      - name: Upload APK direct
-        uses: actions/upload-artifact@v4
+      - run: flutter build apk --debug
+      - uses: actions/upload-artifact@v4
         with:
           name: EARN-OS-APK
-          path: build/app/outputs/flutter-apk/app-release.apk
-          if-no-files-found: error
-      - name: Create Release APK direct
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v4.0-${{ github.run_number }}
-          name: EARN OS V4.0 - Sans Barre Bas Uber + Compte Marque
-          files: build/app/outputs/flutter-apk/app-release.apk
-          body: |
-            EARN OS V4.0 - TOUT REPARE
-            - PLUS de barre bas comme Uber - Home Explore Cart Profile supprime
-            - Haut seulement: Parametres a gauche, EARN AI a droite
-            - Shop by Category: Fashion Electronics Beauty Luxury Food Art
-            - Commander a Manger Bamako: Dibi Pizza Poulet To Burger
-            - Parametres remplis
-            - Compte Marque SEULEMENT dans Parametres: Carte Commerce + Carte Bancaire / RIB - Cache pour clients
-            - Commission: Toi 15% - Marque 70% - Livreur 15%
-          fail_on_unmatched_files: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          path: build/app/outputs/flutter-apk/app-debug.apk

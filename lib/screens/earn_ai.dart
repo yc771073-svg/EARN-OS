@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../theme.dart';
-import 'ai_assistant.dart';
 
 // FICHIER MANQUANT QUI FAISAIT PLANTER V3.8 / V3.9 / V4.0
 // main.dart cherche EarnAIScreen ici, on le met ici
