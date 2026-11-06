@@ -1,27 +1,52 @@
 import 'package:flutter/material.dart';
 import '../theme.dart';
-import '../services/payment_world.dart';
-class CartOrderScreen extends StatefulWidget { const CartOrderScreen({super.key}); @override State<CartOrderScreen> createState()=>_CartOrderScreenState(); }
-class _CartOrderScreenState extends State<CartOrderScreen> {
-  String countryCode='ML'; String selected='orange_ml'; bool paying=false; String status='';
-  List<Map<String,String>> cart=[{'name':'Haute Couture Paris','price':'\u20ac280','emoji':'\ud83d\udc57'},{'name':'Headphones USA','price':'\$199','emoji':'\ud83c\udfa7'},{'name':'Art Mali','price':'\$85','emoji':'\ud83c\udfad'}];
-  String get currency => countryCode=='ML'?'FCFA':countryCode=='FR'?'EUR':'USD';
-  double get total => countryCode=='ML'? 564*655 : 564;
+import '../services/delivery_service.dart';
+class CartOrderScreen extends StatefulWidget { const CartOrderScreen({super.key}); @override State<CartOrderScreen> createState()=>_CState(); }
+class _CState extends State<CartOrderScreen> {
+  bool _ordered=false;
   @override Widget build(BuildContext context){
-    final methods=PaymentWorldService.getMethodsForCountry(countryCode);
-    final sel=methods.firstWhere((m)=>m.id==selected, orElse:()=>methods.first);
-    return Scaffold(backgroundColor: EarnTheme.black, appBar: AppBar(backgroundColor: EarnTheme.black, title: Text('Ma Commande', style: TextStyle(color: EarnTheme.gold))),
-    body: ListView(padding: EdgeInsets.all(16), children: [
-      Text('Panier (${cart.length})', style: TextStyle(color: EarnTheme.gold, fontWeight: FontWeight.bold)),
-      ...cart.map((i)=>ListTile(leading: Text(i['emoji']!, style: TextStyle(fontSize:30)), title: Text(i['name']!, style: TextStyle(color: Colors.white)), subtitle: Text(i['price']!, style: TextStyle(color: EarnTheme.gold)))),
-      SizedBox(height:12), Text('Ton pays', style: TextStyle(color: EarnTheme.gold, fontWeight: FontWeight.bold)),
-      Wrap(spacing:8, children: ['ML','SN','FR','US','KE','AE'].map((c)=>ChoiceChip(label: Text(c), selected: countryCode==c, selectedColor: EarnTheme.gold, onSelected: (_){ setState((){ countryCode=c; selected=PaymentWorldService.getMethodsForCountry(c).first.id; }); })).toList()),
-      SizedBox(height:12), Text('Total: ${total.toInt()} $currency', style: TextStyle(color: Colors.white, fontSize:20, fontWeight: FontWeight.bold)),
-      SizedBox(height:12), Text('Paie avec le paiement de TON pays', style: TextStyle(color: EarnTheme.gold, fontWeight: FontWeight.bold)),
-      ...methods.map((m)=>GestureDetector(onTap: (){ setState((){ selected=m.id; }); }, child: Container(margin: EdgeInsets.only(bottom:8), padding: EdgeInsets.all(12), decoration: BoxDecoration(color: selected==m.id?EarnTheme.gold:EarnTheme.blackCard, border: Border.all(color: EarnTheme.gold), borderRadius: BorderRadius.circular(12)), child: Row(children: [Text(m.icon, style: TextStyle(fontSize:24)), SizedBox(width:10), Text(m.name, style: TextStyle(color: selected==m.id?Colors.black:Colors.white, fontWeight: FontWeight.bold))])))),
+    var agent = DeliveryService.findNearestAgent('Bamako');
+    return ListView(padding: EdgeInsets.all(16), children:[
+      Text('Mon Panier', style: TextStyle(color: EarnTheme.gold, fontSize:20, fontWeight: FontWeight.bold)),
       SizedBox(height:12),
-      ElevatedButton(onPressed: paying?null:() async { setState((){ paying=true; }); await PaymentWorldService.payer(methodId: sel.id, methodName: sel.name, amount: total, currency: currency, phoneOrEmail: '70 00 00 00', brandId: 'order_1'); setState((){ paying=false; status='Commande payee via ${sel.name}! Fournisseur + Livreur notifies.'; }); }, child: Text(paying?'Paiement...':'PAYER MA COMMANDE - ${total.toInt()} $currency via ${sel.name}')),
-      if(status.isNotEmpty) Container(margin: EdgeInsets.only(top:12), padding: EdgeInsets.all(12), decoration: BoxDecoration(color: Colors.green.shade50, borderRadius: BorderRadius.circular(12)), child: Text(status)),
-    ]));
+      Container(padding: EdgeInsets.all(12), decoration: BoxDecoration(border: Border.all(color: EarnTheme.gold), borderRadius: BorderRadius.circular(14)), child: Row(children:[
+        Text('🚗', style: TextStyle(fontSize:30)), SizedBox(width:10),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children:[Text('Tesla Model 3', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)), Text('Marque Mondiale - Livraison EARN OS', style: TextStyle(color: EarnTheme.gold, fontSize:11))])),
+        Text('€45,000', style: TextStyle(color: EarnTheme.gold, fontWeight: FontWeight.bold)),
+      ])),
+      SizedBox(height:12),
+      Container(padding: EdgeInsets.all(12), decoration: BoxDecoration(border: Border.all(color: EarnTheme.gold), borderRadius: BorderRadius.circular(14)), child: Row(children:[
+        Text('👟', style: TextStyle(fontSize:30)), SizedBox(width:10),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children:[Text('Nike Air Max', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)), Text('Marque Mondiale', style: TextStyle(color: EarnTheme.gold, fontSize:11))])),
+        Text('€120', style: TextStyle(color: EarnTheme.gold, fontWeight: FontWeight.bold)),
+      ])),
+      SizedBox(height:16),
+      // PAIEMENT SIMPLE - PAS D'ONGLET PAY
+      Text('Paiement', style: TextStyle(color: EarnTheme.gold, fontWeight: FontWeight.bold)),
+      SizedBox(height:8),
+      Row(children:[
+        Expanded(child: Container(padding: EdgeInsets.all(10), decoration: BoxDecoration(color: EarnTheme.gold, borderRadius: BorderRadius.circular(10)), child: Center(child: Text('Orange Money', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold))))),
+        SizedBox(width:8),
+        Expanded(child: Container(padding: EdgeInsets.all(10), decoration: BoxDecoration(border: Border.all(color: EarnTheme.gold), borderRadius: BorderRadius.circular(10)), child: Center(child: Text('Visa •••• 4242', style: TextStyle(color: Colors.white))))),
+      ]),
+      SizedBox(height:16),
+      ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: EarnTheme.gold, padding: EdgeInsets.symmetric(vertical:16)), onPressed: (){
+        setState(()=>_ordered=true);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Commande confirmée ! EARN OS a envoyé au livreur en arrière-plan.')));
+      }, child: Text(_ordered ? 'Commande Confirmée ✅' : 'Commander - EARN OS s\'occupe de la livraison', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold))),
+      SizedBox(height:16),
+      // APRES COMMANDE - TU VOIS JUSTE QUE LE LIVREUR ARRIVE - PAS DE PAGE DELIVERY
+      if(_ordered) Container(padding: EdgeInsets.all(14), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14)), child: Column(children:[
+        Row(children:[Icon(Icons.check_circle, color: Colors.green), SizedBox(width:8), Column(crossAxisAlignment: CrossAxisAlignment.start, children:[Text('Commande confirmée #EARN12345', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)), Text('12 oct. 2026 • 14:30', style: TextStyle(color: Colors.black54, fontSize:12))])]),
+        SizedBox(height:10),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children:[Text('✅ Confirmée', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)), Text('🛵 En livraison', style: TextStyle(color: Colors.black)), Text('✅ Livrée', style: TextStyle(color: Colors.black38))]),
+        SizedBox(height:10),
+        Container(padding: EdgeInsets.all(10), decoration: BoxDecoration(color: Color(0xFFE8F4FF), borderRadius: BorderRadius.circular(10)), child: Center(child: Text('🗺️ Bamako • Livreur à 2.3 km\n${agent['name']} • ⭐ ${agent['rating']} • Arrivée: 5 min', textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)))),
+        SizedBox(height:10),
+        Row(children:[Expanded(child: ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF0A1A3A)), onPressed: (){}, child: Text('Voir sur la carte', style: TextStyle(color: Colors.white)))), SizedBox(width:8), Text('Contacter le livreur', style: TextStyle(color: EarnTheme.gold, fontWeight: FontWeight.bold))]),
+        SizedBox(height:8),
+        Text('EARN OS a envoyé la notification au livreur automatiquement. Tu n\'as rien à faire.', textAlign: TextAlign.center, style: TextStyle(color: Colors.black54, fontSize:11)),
+      ])),
+    ]);
   }
 }
