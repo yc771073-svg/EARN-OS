@@ -14,5 +14,3 @@ dev_dependencies:
   flutter_lints: ^3.0.0
 flutter:
   uses-material-design: true
-  assets:
-    - assets/eos_logo.png
