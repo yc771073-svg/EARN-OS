@@ -5,11 +5,15 @@ class EarnLogo extends StatelessWidget {
   const EarnLogo({super.key, this.size=40});
   @override Widget build(BuildContext context){
     return Row(mainAxisSize: MainAxisSize.min, children:[
-      Container(width: size, height: size, decoration: BoxDecoration(color: Colors.black, border: Border.all(color: EarnTheme.gold, width:2), shape: BoxShape.circle), child: Center(child: Text('◆', style: TextStyle(color: EarnTheme.gold, fontSize: size*0.5)))),
+      // LOGO MOTO JAUNE COMME SUR LA PHOTO - PAS DIAMANT
+      Container(width: size+6, height: size+6, decoration: BoxDecoration(color: Color(0xFFFFD600), shape: BoxShape.circle, border: Border.all(color: EarnTheme.gold, width:2)), child: Center(child: Text('🛵', style: TextStyle(fontSize: size*0.55)))),
       SizedBox(width:8),
       Column(crossAxisAlignment: CrossAxisAlignment.start, children:[
-        Text('EARN OS', style: TextStyle(color: EarnTheme.gold, fontSize: size*0.45, fontWeight: FontWeight.bold, letterSpacing: 2)),
-        Text('LUXE • GLOBAL • BAMAKO', style: TextStyle(color: EarnTheme.gold.withOpacity(0.7), fontSize: size*0.18)),
+        RichText(text: TextSpan(children:[
+          TextSpan(text:'EARN ', style: TextStyle(color: Colors.white, fontSize: size*0.45, fontWeight: FontWeight.bold, letterSpacing:1)),
+          TextSpan(text:'OS', style: TextStyle(color: Color(0xFFFFD600), fontSize: size*0.45, fontWeight: FontWeight.bold)),
+        ])),
+        Text('Global Delivery OS', style: TextStyle(color: EarnTheme.gold.withOpacity(0.9), fontSize: size*0.20, fontWeight: FontWeight.bold)),
       ]),
     ]);
   }
@@ -18,10 +22,12 @@ class EarnLogoBig extends StatelessWidget {
   const EarnLogoBig({super.key});
   @override Widget build(BuildContext context){
     return Container(padding: EdgeInsets.all(20), decoration: BoxDecoration(color: EarnTheme.blackCard, border: Border.all(color: EarnTheme.gold), borderRadius: BorderRadius.circular(20)), child: Column(children:[
-      Container(width:80, height:80, decoration: BoxDecoration(border: Border.all(color: EarnTheme.gold, width:2), shape: BoxShape.circle), child: Center(child: Text('◆', style: TextStyle(color: EarnTheme.gold, fontSize:40)))),
-      SizedBox(height:10), Text('EARN OS', style: TextStyle(color: EarnTheme.gold, fontSize:32, fontWeight: FontWeight.bold, letterSpacing:3)),
-      Text('Le luxe du monde, livré à Bamako', style: TextStyle(color: Colors.white)),
-      SizedBox(height:6), Text('◆  EARN AI  •  WORLD  •  PAY  •  DELIVERY  ◆', style: TextStyle(color: EarnTheme.gold, fontSize:10)),
+      Container(width:90, height:90, decoration: BoxDecoration(color: Color(0xFFFFD600), shape: BoxShape.circle, border: Border.all(color: EarnTheme.gold, width:2)), child: Center(child: Text('🛵', style: TextStyle(fontSize:50)))),
+      SizedBox(height:10),
+      RichText(text: TextSpan(children:[TextSpan(text:'EARN ', style: TextStyle(color: Colors.white, fontSize:32, fontWeight: FontWeight.bold)), TextSpan(text:'OS', style: TextStyle(color: Color(0xFFFFD600), fontSize:32, fontWeight: FontWeight.bold))])),
+      Text('Global Delivery OS', style: TextStyle(color: EarnTheme.gold, fontWeight: FontWeight.bold)),
+      Text('Commandez • Suivez • Recevez plus rapidement !', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize:12)),
+      SizedBox(height:8), Text('🗣️  PARLE TOUTES LES LANGUES  •  🌍  120+ PAYS', style: TextStyle(color: EarnTheme.gold, fontSize:10, fontWeight: FontWeight.bold)),
     ]));
   }
 }

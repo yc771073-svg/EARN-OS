@@ -16,7 +16,10 @@ class _AppState extends State<EarnOSApp> {
   Locale _locale = const Locale('fr');
   void setLocale(Locale l){ setState(()=>_locale=l); }
   @override Widget build(BuildContext context){
-    return MaterialApp(title:'EARN OS', debugShowCheckedModeBanner:false, locale:_locale, supportedLocales: const [Locale('en'), Locale('fr'), Locale('bm'), Locale('ar'), Locale('tr')], localizationsDelegates: const [GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate, GlobalCupertinoLocalizations.delegate], theme: EarnTheme.luxury, darkTheme: EarnTheme.luxury, themeMode: ThemeMode.dark, home: MainShell(onLocaleChange: setLocale));
+    return MaterialApp(title:'EARN OS', debugShowCheckedModeBanner:false, locale:_locale,
+      supportedLocales: const [Locale('en'), Locale('fr'), Locale('bm'), Locale('ar'), Locale('tr'), Locale('es'), Locale('pt'), Locale('de'), Locale('it'), Locale('zh'), Locale('wo'), Locale('ha')],
+      localizationsDelegates: const [GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate, GlobalCupertinoLocalizations.delegate],
+      theme: EarnTheme.luxury, darkTheme: EarnTheme.luxury, themeMode: ThemeMode.dark, home: MainShell(onLocaleChange: setLocale));
   }
 }
 class MainShell extends StatefulWidget { final Function(Locale) onLocaleChange; const MainShell({super.key, required this.onLocaleChange}); @override State<MainShell> createState()=>_ShellState(); }
@@ -24,19 +27,14 @@ class _ShellState extends State<MainShell> {
   int _index=0;
   @override Widget build(BuildContext context){
     final screens=[WorldSelectorScreen(onLocaleChange: widget.onLocaleChange), const MarketplaceScreen(), const SupplierDashboardScreen(), const CartOrderScreen(), const PaymentWorldScreen(), const DeliveryScreen(), const AIAssistantScreen(), SettingsScreen(onLocaleChange: widget.onLocaleChange)];
-    final titles=['Home','Explore','Brands','Cart','Pay','Delivery','EARN AI','Profile'];
     return Scaffold(backgroundColor: EarnTheme.black,
-      // BARRE DU HAUT - LOGO + PROFIL EN HAUT
       appBar: AppBar(backgroundColor: EarnTheme.black, elevation:0, title: EarnLogo(size:32), actions:[
         IconButton(icon: Icon(Icons.notifications_none, color: EarnTheme.gold), onPressed: (){}),
-        IconButton(icon: Icon(Icons.favorite_border, color: EarnTheme.gold), onPressed: (){}),
-        GestureDetector(onTap: ()=>setState(()=>_index=7), child: Container(margin: EdgeInsets.only(right:12), child: CircleAvatar(radius:18, backgroundColor: EarnTheme.gold, child: Text('Y', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold))))),
+        GestureDetector(onTap: ()=>setState(()=>_index=7), child: Container(margin: EdgeInsets.only(right:12), child: CircleAvatar(radius:18, backgroundColor: Color(0xFFFFD600), child: Text('Y', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold))))),
       ]),
       body: screens[_index],
-      // BOUTON EARN AI FLOTTANT
       floatingActionButton: _index==6?null:FloatingActionButton(backgroundColor: EarnTheme.gold, onPressed: ()=>setState(()=>_index=6), child: Icon(Icons.smart_toy, color: Colors.black, size:28)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // BARRE DU BAS - 8 ONGLETS BIEN SEPARES
       bottomNavigationBar: Container(decoration: BoxDecoration(color: EarnTheme.black, border: Border(top: BorderSide(color: EarnTheme.gold.withOpacity(0.5)))), child: BottomNavigationBar(backgroundColor: Colors.transparent, type: BottomNavigationBarType.fixed, selectedItemColor: EarnTheme.gold, unselectedItemColor: Colors.white60, selectedFontSize: 10, unselectedFontSize: 10, currentIndex: _index, onTap: (i)=>setState(()=>_index=i), items: [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
         BottomNavigationBarItem(icon: Icon(Icons.public), label: 'Explore'),
